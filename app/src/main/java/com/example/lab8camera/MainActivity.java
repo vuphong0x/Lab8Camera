@@ -36,13 +36,6 @@ public class MainActivity extends AppCompatActivity {
         btnPhoto = findViewById(R.id.btnPhoto);
         imgPhoto = findViewById(R.id.imageView);
 
-        // Media Player
-        startTimeField = findViewById(R.id.tvStartTime);
-        endTimeField = findViewById(R.id.tvEndTime);
-        seekBar = findViewById(R.id.seekBar);
-        playButton = findViewById(R.id.imgPlay);
-        pauseButton = findViewById(R.id.imgPause);
-
     }
 
     public void openCameraIntent(View view) {
@@ -65,71 +58,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    // Media Player
-    MediaPlayer mediaPlayer;
-    public TextView startTimeField, endTimeField;
-    private double startTime = 0;
-    private double finalTime = 0;
-    private Handler myHandler = new Handler();
-    private int forwardTime = 5000;
-    private int backwardTime = 5000;
-    private SeekBar seekBar;
-    private ImageButton playButton, pauseButton;
-    public static int oneTimeOnly = 0;
-
-    public void play(View view) {
-        String url = "https://data25.chiasenhac.com/download2/2119/4/2118254-0070995b/128/Danh%20Mat%20Em%20-%20Quang%20Dang%20Tran.mp3";
-        Uri uri = Uri.parse(url);
-        mediaPlayer = MediaPlayer.create(this, uri);
-        Toast.makeText(this, "Playing sound", Toast.LENGTH_SHORT).show();
-        mediaPlayer.start();
-        finalTime = mediaPlayer.getDuration();
-        startTime = mediaPlayer.getCurrentPosition();
-        if (oneTimeOnly == 0) {
-            seekBar.setMax((int) finalTime);
-            oneTimeOnly = 1;
-        }
-
-        endTimeField.setText(String.format(
-                "%d min, %d sec",
-                TimeUnit.MILLISECONDS.toMinutes((long) startTime),
-                TimeUnit.MILLISECONDS.toSeconds((long) startTime)
-                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
-                                .toMinutes((long) finalTime))));
-        startTimeField.setText(String.format(
-                "%d min, %d sec",
-                TimeUnit.MILLISECONDS.toMinutes((long) startTime),
-                TimeUnit.MILLISECONDS.toSeconds((long) startTime)
-                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
-                        .toMinutes((long) startTime))));
-        seekBar.setProgress((int) startTime);
-        myHandler.postDelayed(UpdateSongTime, 100);
-        pauseButton.setEnabled(true);
-        playButton.setEnabled(false);
+    public void media(View view) {
+        Intent intent = new Intent(MainActivity.this, MediaActivity.class);
+        startActivity(intent);
     }
-
-    private Runnable UpdateSongTime = new Runnable() {
-        @Override
-        public void run() {
-            startTime = mediaPlayer.getCurrentPosition();
-            startTimeField.setText(String.format(
-                    "%d min, %d sec",
-                    TimeUnit.MILLISECONDS.toMinutes((long) startTime),
-                    TimeUnit.MILLISECONDS.toSeconds((long) startTime)
-                            - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS
-                            .toMinutes((long) startTime))));
-            seekBar.setProgress((int) startTime);
-            myHandler.postDelayed(this, 100);
-        }
-    };
-
-    public void pause(View view) {
-        Toast.makeText(this, "Pausing sound", Toast.LENGTH_SHORT).show();
-        mediaPlayer.pause();
-        pauseButton.setEnabled(false);
-        playButton.setEnabled(true);
-    }
-
-
 }
